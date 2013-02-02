@@ -115,7 +115,7 @@ static unsigned int sample_rate_jiffies;
 
 
 static void (*pm_idle_old)(void);
-static atomic_t active_count = ATOMIC_INIT(0);
+static int active_count;
 
 struct smartass_info_s {
 	struct cpufreq_policy *cur_policy;
@@ -699,7 +699,7 @@ static int cpufreq_governor_smartass(struct cpufreq_policy *new_policy,
 
 		// Do not register the idle hook and create sysfs
 		// entries if we have already done so.
-		if (atomic_inc_return(&active_count) <= 1) {
+		if (++active_count <= 1) {
 			rc = sysfs_create_group(cpufreq_global_kobject,
 						&smartass_attr_group);
 			if (rc)
@@ -740,7 +740,7 @@ static int cpufreq_governor_smartass(struct cpufreq_policy *new_policy,
 		flush_work(&freq_scale_work);
 		this_smartass->idle_exit_time = 0;
 
-		if (atomic_dec_return(&active_count) <= 1) {
+		if (++active_count <= 1) {
 			sysfs_remove_group(cpufreq_global_kobject,
 					   &smartass_attr_group);
 			pm_idle = pm_idle_old;

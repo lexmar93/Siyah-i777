@@ -137,7 +137,13 @@ config CPU_FREQ_DEFAULT_GOV_SMARTASS2
 	bool "smartass2"
 	select CPU_FREQ_GOV_SMARTASS2
 	---help---
-	  Use the CPUFreq governor 'smartassV2' as default.
+	  Use the CPUFreq governor 'SmartassV2' as default.
+
+config CPU_FREQ_DEFAULT_GOV_SAVAGED
+	bool "savaged"
+	select CPU_FREQ_GOV_SAVAGED
+	---help---
+	  Use the CPUFreq governor 'SavagedZen' as default.
 
 config CPU_FREQ_DEFAULT_GOV_ONDEMAND
 	bool "ondemand"
@@ -486,7 +492,13 @@ config CPU_FREQ_GOV_SMARTASS2
 	tristate "'smartassV2' cpufreq governor"
 	depends on CPU_FREQ
 	---help---
-	  'smartassV2' - a "smart" governor
+	  'SmartassV2' - a "smart" governor
+
+config CPU_FREQ_GOV_SAVAGED
+	tristate "'savaged' cpufreq governor"
+	depends on CPU_FREQ
+	---help---
+	  'SavagedZen' - a "smart" governor
 
 config SLP_CHECK_CPU_LOAD
         bool "check load and frequency of cpu"

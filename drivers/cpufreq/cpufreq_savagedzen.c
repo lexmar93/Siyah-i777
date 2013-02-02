@@ -37,7 +37,7 @@
 #include <linux/earlysuspend.h>
 
 static void (*pm_idle_old)(void);
-static atomic_t active_count = ATOMIC_INIT(0);
+static int active_count;
 
 struct savagedzen_info_s {
         struct cpufreq_policy *cur_policy;
@@ -593,7 +593,7 @@ static int cpufreq_governor_savagedzen(struct cpufreq_policy *new_policy,
                  * Do not register the idle hook and create sysfs
                  * entries if we have already done so.
                  */
-                if (atomic_inc_return(&active_count) <= 1) {
+                if (++active_count <= 1) {
                         rc = sysfs_create_group(&new_policy->kobj, &savagedzen_attr_group);
                         if (rc)
                                 return rc;
@@ -619,7 +619,7 @@ static int cpufreq_governor_savagedzen(struct cpufreq_policy *new_policy,
                 del_timer(&this_savagedzen->timer);
                 this_savagedzen->enable = 0;
 
-                if (atomic_dec_return(&active_count) > 1)
+                if (++active_count > 1)
                         return 0;
                 sysfs_remove_group(&new_policy->kobj,
                                 &savagedzen_attr_group);
